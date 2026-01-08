@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaMind - Vishnu College Science Core</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Orbitron', 'sans-serif'],
+                    },
+                    animation: {
+                        'spin-slow': 'spin 10s linear infinite',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+        }
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background-color: #164e63; /* cyan-900 */
+            border-radius: 20px;
+        }
+
+        /* Nebula Effects */
+        .nebula-purple {
+            background: radial-gradient(circle, rgba(88, 28, 135, 0.4) 0%, rgba(0,0,0,0) 70%);
+        }
+        .nebula-blue {
+            background: radial-gradient(circle, rgba(30, 58, 138, 0.3) 0%, rgba(0,0,0,0) 70%);
+        }
+    </style>
+</head>
+<body class="bg-black text-white overflow-hidden h-screen w-screen relative">
+
+    <!-- Background Elements (Always Visible) -->
+    <div class="absolute inset-0 z-0 pointer-events-none">
+        <!-- Stars -->
+        <div class="absolute top-10 left-10 w-1 h-1 bg-white rounded-full animate-pulse"></div>
+        <div class="absolute top-40 left-80 w-2 h-2 bg-purple-400 rounded-full animate-pulse opacity-50" style="animation-duration: 3s;"></div>
+        <div class="absolute bottom-20 right-20 w-1 h-1 bg-cyan-300 rounded-full animate-pulse"></div>
+        <div class="absolute top-1/2 left-1/2 w-0.5 h-0.5 bg-white rounded-full"></div>
+        <div class="absolute top-10 right-10 w-1 h-1 bg-white rounded-full opacity-70"></div>
+        
+        <!-- Nebulas -->
+        <div class="absolute -top-40 -left-40 w-96 h-96 nebula-purple filter blur-3xl opacity-50 animate-pulse" style="animation-duration: 8s;"></div>
+        <div class="absolute bottom-0 right-0 w-[500px] h-[500px] nebula-blue filter blur-3xl opacity-40"></div>
+    </div>
+
+    <!-- Main Content Container -->
+    <div id="app" class="relative z-10 h-full flex flex-col">
+        
+        <!-- VIEW: LOGO SCREEN -->
+        <div id="view-logo" class="flex-1 flex flex-col items-center justify-center animate-fade-in hidden">
+            <div class="relative">
+                <div class="absolute inset-0 bg-cyan-500 blur-xl opacity-20 rounded-full animate-pulse"></div>
+                <i data-lucide="atom" class="w-32 h-32 text-cyan-400 animate-spin-slow"></i>
+            </div>
+            <h1 class="mt-8 text-5xl font-display font-bold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 drop-shadow-lg">
+                NOVAMIND
+            </h1>
+            <p class="mt-2 text-xl text-cyan-200 tracking-widest uppercase font-display">Science Core</p>
+            <div class="mt-12 flex items-center space-x-2 text-purple-300">
+                <i data-lucide="loader-2" class="animate-spin"></i>
+                <span>Initializing NovaMind systems...</span>
+            </div>
+        </div>
+
+        <!-- VIEW: SIGN IN -->
+        <div id="view-signin" class="flex-1 flex flex-col items-center justify-center p-4 hidden">
+            <div class="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl transform transition-all hover:border-cyan-500/50">
+                <div class="flex justify-center mb-6">
+                    <div class="p-4 bg-cyan-500/20 rounded-full border border-cyan-500/30">
+                        <i data-lucide="rocket" class="w-10 h-10 text-cyan-300"></i>
+                    </div>
+                </div>
+                
+                <h2 class="text-2xl font-bold text-center text-white mb-2 font-display">Identify Yourself</h2>
+                <p class="text-center text-gray-400 mb-8 text-sm">Welcome</p>
+                
+                <form id="signin-form" class="space-y-4">
+                    <!-- College ID Field -->
+                    <div>
+                        <label class="block text-xs font-medium text-cyan-300 uppercase tracking-wider mb-1">College ID</label>
+                        <div class="relative">
+                            <div class="absolute left-3 top-3 text-gray-500">
+                                <i data-lucide="user" class="w-4 h-4"></i>
+                            </div>
+                            <input 
+                                type="text" 
+                                id="input-college-id"
+                                required
+                                class="w-full bg-black/50 border border-white/20 rounded-lg py-2.5 pl-10 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                                placeholder="Enter College ID"
+                            >
+                        </div>
+                    </div>
+                    
+                    <!-- Password Field -->
+                    <div>
+                        <label class="block text-xs font-medium text-cyan-300 uppercase tracking-wider mb-1">Password</label>
+                        <div class="relative">
+                            <div class="absolute left-3 top-3 text-gray-500">
+                                <i data-lucide="lock" class="w-4 h-4"></i>
+                            </div>
+                            <input 
+                                type="password" 
+                                id="input-password"
+                                required
+                                class="w-full bg-black/50 border border-white/20 rounded-lg py-2.5 pl-10 pr-4 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                                placeholder="••••••••"
+                            >
+                        </div>
+                    </div>
+
+                    <button 
+                        type="submit"
+                        id="btn-signin"
+                        disabled
+                        class="w-full mt-6 bg-gray-700 text-gray-400 font-bold py-3 px-4 rounded-lg shadow-lg flex items-center justify-center space-x-2 transition-all transform cursor-not-allowed"
+                    >
+                        <span>Enter NovaMind Station</span>
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                    
+                    <div class="text-center mt-4">
+                        <p class="text-xs text-gray-400">Don't have an account? <a href="#" class="text-cyan-400 hover:text-cyan-300 transition-colors font-medium">Sign up</a></p>
+                    </div>
+
+                    <!-- Quick Connect -->
+                    <div class="mt-6">
+                        <div class="relative">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-white/10"></div>
+                            </div>
+                            <div class="relative flex justify-center text-sm">
+                                <span class="px-2 bg-black/50 text-gray-500">Quick Connect</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 grid grid-cols-2 gap-3">
+                            <button type="button" class="flex items-center justify-center px-4 py-2 border border-white/10 rounded-lg bg-white/5 hover:bg-white/10 hover:border-cyan-500/30 transition-all group">
+                                <svg class="h-5 w-5 mr-2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.84z" fill="#FBBC05"/>
+                                    <path d="M12 4.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.09 14.97 0 12 0 7.7 0 3.99 2.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                                </svg>
+                                <span class="text-sm text-gray-300 group-hover:text-white">Google</span>
+                            </button>
+                            <button type="button" class="flex items-center justify-center px-4 py-2 border border-white/10 rounded-lg bg-white/5 hover:bg-white/10 hover:border-cyan-500/30 transition-all group">
+                                <svg class="h-5 w-5 mr-2" viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill="#f3f3f3" d="M0 0h23v23H0z"/>
+                                    <path fill="#f35325" d="M1 1h10v10H1z"/>
+                                    <path fill="#81bc06" d="M12 1h10v10H12z"/>
+                                    <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+                                    <path fill="#ffba08" d="M12 12h10v10H12z"/>
+                                </svg>
+                                <span class="text-sm text-gray-300 group-hover:text-white">Microsoft</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- VIEW: CHAT INTERFACE -->
+        <div id="view-chat" class="flex-1 flex flex-row hidden h-full">
+            
+            <!-- Mobile Sidebar Toggle -->
+            <div class="md:hidden absolute top-4 left-4 z-50">
+                <button id="btn-toggle-sidebar" class="p-2 bg-black/60 backdrop-blur border border-cyan-500/30 rounded-lg text-cyan-400">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+
+            <!-- Sidebar -->
+            <aside id="sidebar" class="absolute md:relative inset-y-0 left-0 z-40 w-72 bg-black/90 md:bg-black/40 backdrop-blur-xl border-r border-white/10 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col h-full">
+                <div class="p-6 border-b border-white/10">
+                    <div class="flex items-center space-x-3 mb-1">
+                        <i data-lucide="atom" class="w-6 h-6 text-cyan-400 animate-spin-slow"></i>
+                        <span class="font-bold text-lg text-white tracking-wider font-display">NOVAMIND</span>
+                    </div>
+                    <p class="text-xs text-gray-500 uppercase tracking-widest pl-9">History Log</p>
+                </div>
+
+                <div id="history-container" class="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin">
+                    <div class="text-xs font-semibold text-gray-500 uppercase mb-2 ml-2">Session Queries</div>
+                    <div id="history-list">
+                        <!-- History items injected here -->
+                        <div class="text-sm text-gray-600 italic p-4 text-center border border-white/5 rounded-lg">
+                            No queries recorded.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer with Settings -->
+                <div class="p-4 border-t border-white/10 bg-black/20 relative">
+                    <!-- Settings Menu Dropdown -->
+                    <div id="settings-menu" class="absolute bottom-[calc(100%+8px)] left-4 right-4 bg-gray-900/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl p-2 hidden z-50 origin-bottom animate-fade-in">
+                        <div class="space-y-1">
+                            <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/10 text-sm text-gray-300 hover:text-white flex items-center gap-3 transition-colors">
+                                <i data-lucide="languages" class="w-4 h-4 text-cyan-400"></i> Language
+                            </button>
+                            <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/10 text-sm text-gray-300 hover:text-white flex items-center gap-3 transition-colors">
+                                <i data-lucide="palette" class="w-4 h-4 text-purple-400"></i> Appearance
+                            </button>
+                            <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/10 text-sm text-gray-300 hover:text-white flex items-center gap-3 transition-colors">
+                                <i data-lucide="sliders" class="w-4 h-4 text-blue-400"></i> Personalization
+                            </button>
+                            <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/10 text-sm text-gray-300 hover:text-white flex items-center gap-3 transition-colors">
+                                <i data-lucide="mail" class="w-4 h-4 text-green-400"></i> Email
+                            </button>
+                            <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-white/10 text-sm text-gray-300 hover:text-white flex items-center gap-3 transition-colors">
+                                <i data-lucide="info" class="w-4 h-4 text-yellow-400"></i> About
+                            </button>
+                            <div class="h-px bg-white/10 my-1"></div>
+                            <button id="btn-switch-account" class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-red-500/20 text-sm text-red-400 hover:text-red-300 flex items-center gap-3 transition-colors">
+                                <i data-lucide="log-out" class="w-4 h-4"></i> Switch Account
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <!-- User Profile Info -->
+                        <div class="flex items-center space-x-3 p-2 rounded-lg bg-cyan-900/10 border border-cyan-500/20 flex-1">
+                            <div class="w-8 h-8 rounded-full bg-cyan-600/20 flex items-center justify-center text-cyan-400 shrink-0">
+                                <i data-lucide="user" class="w-4 h-4"></i>
+                            </div>
+                            <div class="overflow-hidden">
+                                <p id="display-name" class="text-sm text-white font-medium truncate">Authorized Personnel</p>
+                                <p id="display-id" class="text-xs text-gray-500 truncate">ID: ---</p>
+                            </div>
+                        </div>
+
+                        <!-- Settings Trigger Button -->
+                        <button id="btn-settings" class="p-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 text-gray-400 hover:text-white transition-all hover:scale-105 active:scale-95">
+                            <i data-lucide="settings" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Chat Area -->
+            <div class="flex-1 flex flex-col h-full relative">
+                <!-- Header -->
+                <header class="h-16 border-b border-white/10 bg-black/40 backdrop-blur-md flex items-center justify-between px-6 z-20 md:pl-6 pl-16 shrink-0">
+                    <div class="flex items-center space-x-3">
+                        <div>
+                            <h1 class="text-lg font-bold text-white tracking-wide hidden md:block font-display">Science Core</h1>
+                            <div class="flex items-center space-x-2">
+                                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                                <p class="text-xs text-cyan-300">System Online</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- New Chat Button (Top Right) -->
+                    <button id="btn-new-chat" class="flex items-center space-x-2 px-4 py-2 bg-cyan-600/20 hover:bg-cyan-600/40 border border-cyan-500/50 rounded-lg text-cyan-400 hover:text-white transition-all group">
+                        <i data-lucide="message-square-plus" class="w-4 h-4"></i>
+                        <span class="text-sm font-medium">New Chat</span>
+                    </button>
+                </header>
+
+                <!-- Chat Feed -->
+                <main id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin">
+                    <!-- Messages injected here -->
+                </main>
+
+                <!-- Input Area -->
+                <div class="p-4 bg-black/40 backdrop-blur-md border-t border-white/10 shrink-0">
+                    
+                    <!-- Flex container for Attachment + Input -->
+                    <div class="relative max-w-4xl mx-auto flex items-end gap-2">
+                        
+                        <!-- Attachment Dropdown Menu (Popping Upwards) -->
+                        <div id="attachment-menu" class="absolute bottom-16 left-0 bg-gray-900/95 backdrop-blur-xl border border-white/10 rounded-xl p-2 hidden min-w-[160px] flex-col gap-1 z-50 animate-fade-in shadow-2xl shadow-cyan-900/20">
+                            <button type="button" class="flex items-center gap-3 w-full px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors text-left">
+                                <i data-lucide="file-up" class="w-4 h-4 text-cyan-400"></i> Upload Files
+                            </button>
+                            <button type="button" class="flex items-center gap-3 w-full px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors text-left">
+                                <i data-lucide="image" class="w-4 h-4 text-purple-400"></i> Photos
+                            </button>
+                            <button type="button" class="flex items-center gap-3 w-full px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors text-left">
+                                <i data-lucide="camera" class="w-4 h-4 text-green-400"></i> Camera
+                            </button>
+                        </div>
+
+                        <!-- Plus Button to toggle menu -->
+                        <button id="btn-attach" type="button" class="p-3.5 mb-0.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-full text-gray-400 hover:text-cyan-400 transition-colors shrink-0">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+
+                        <!-- Input Form -->
+                        <form id="chat-form" class="relative flex-1">
+                            <input
+                                type="text"
+                                id="chat-input"
+                                placeholder="Query NovaMind (Physics/Chemistry Only)..."
+                                class="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-4 pr-12 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:bg-white/10 transition-all shadow-inner"
+                                autocomplete="off"
+                            >
+                            <button 
+                                type="submit" 
+                                id="btn-send"
+                                disabled
+                                class="absolute right-2 top-2 p-1.5 bg-cyan-600 rounded-xl text-white hover:bg-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-lg hover:shadow-cyan-500/50"
+                            >
+                                <i data-lucide="send" class="w-5 h-5"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="text-center mt-2 flex justify-center space-x-4">
+                        <p class="text-[10px] text-gray-500">Restricted to Scientific Inquiries.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // --- Configuration ---
+        // API KEY is now handled by the Backend Flask Server
+        const SYSTEM_PROMPT = `
+            You are NovaMind, the official Science Chatbot for Vishnu College. 
+            Your Core Directive: You are ONLY allowed to discuss Physics and Chemistry.
+            
+            Rules:
+            1. If the user asks about Fees, Admissions, Hostels, Sports, Arts, or Campus Life, you must politely REFUSE and say: "I am designed only to discuss scientific topics (Physics & Chemistry). Please contact the admin office for other queries."
+            2. If the user asks about Biology, Math, or Computer Science, briefly mention you specialize in Physics and Chemistry.
+            3. Keep answers concise, accurate, and suitable for college students.
+            4. Maintain a "Space/Futuristic" persona in your tone. Use terms like "Affirmative", "Data received", "Cosmic query".
+        `;
+
+        // --- State ---
+        let state = {
+            view: 'logo', // logo, signin, chat
+            user: { id: '', password: '' },
+            messages: [],
+            sidebarOpen: false,
+            isLoading: false,
+            settingsOpen: false,
+            attachmentOpen: false
+        };
+
+        // --- DOM Elements ---
+        const views = {
+            logo: document.getElementById('view-logo'),
+            signin: document.getElementById('view-signin'),
+            chat: document.getElementById('view-chat')
+        };
+        
+        const inputs = {
+            collegeId: document.getElementById('input-college-id'),
+            password: document.getElementById('input-password'),
+            chat: document.getElementById('chat-input')
+        };
+
+        const buttons = {
+            signin: document.getElementById('btn-signin'),
+            send: document.getElementById('btn-send'),
+            toggleSidebar: document.getElementById('btn-toggle-sidebar'),
+            settings: document.getElementById('btn-settings'),
+            switchAccount: document.getElementById('btn-switch-account'),
+            newChat: document.getElementById('btn-new-chat'),
+            attach: document.getElementById('btn-attach')
+        };
+
+        const containers = {
+            chat: document.getElementById('chat-container'),
+            history: document.getElementById('history-list'),
+            sidebar: document.getElementById('sidebar'),
+            displayName: document.getElementById('display-name'),
+            displayId: document.getElementById('display-id'),
+            settingsMenu: document.getElementById('settings-menu'),
+            attachmentMenu: document.getElementById('attachment-menu')
+        };
+
+        // --- Initialization ---
+        function init() {
+            lucide.createIcons();
+            showView('logo');
+            
+            // Logo Timer
+            setTimeout(() => {
+                showView('signin');
+            }, 3000);
+
+            // Set Initial Message
+            addMessage('assistant', 'Greetings. I am NovaMind, the Vishnu College Science Core. I am calibrated to discuss Physics and Chemistry. Initiate your query.');
+        }
+
+        // --- View Management ---
+        function showView(viewName) {
+            state.view = viewName;
+            
+            // Hide all
+            Object.values(views).forEach(el => el.classList.add('hidden'));
+            
+            // Show target
+            if (views[viewName]) {
+                views[viewName].classList.remove('hidden');
+                
+                // Special case for display type of chat (flex)
+                if (viewName === 'chat') {
+                    views[viewName].classList.add('flex');
+                    views[viewName].classList.remove('flex-col', 'items-center', 'justify-center');
+                }
+            }
+            lucide.createIcons();
+        }
+
+        // --- Logic Handlers ---
+
+        // 1. Sign In
+        function checkSignInValidity() {
+            const id = inputs.collegeId.value.trim();
+            const pass = inputs.password.value.trim();
+            
+            if (id && pass) {
+                buttons.signin.removeAttribute('disabled');
+                buttons.signin.classList.remove('bg-gray-700', 'text-gray-400', 'cursor-not-allowed');
+                buttons.signin.classList.add('bg-gradient-to-r', 'from-cyan-600', 'to-blue-700', 'text-white', 'hover:scale-[1.02]');
+            } else {
+                buttons.signin.setAttribute('disabled', 'true');
+                buttons.signin.classList.add('bg-gray-700', 'text-gray-400', 'cursor-not-allowed');
+                buttons.signin.classList.remove('bg-gradient-to-r', 'from-cyan-600', 'to-blue-700', 'text-white', 'hover:scale-[1.02]');
+            }
+        }
+
+        document.getElementById('signin-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            state.user.id = inputs.collegeId.value.trim();
+            
+            containers.displayName.textContent = "Authorized Personnel";
+            containers.displayId.textContent = state.user.id;
+            
+            showView('chat');
+        });
+
+        inputs.collegeId.addEventListener('input', checkSignInValidity);
+        inputs.password.addEventListener('input', checkSignInValidity);
+
+        // 2. Chat Logic
+        document.getElementById('chat-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            handleSendMessage();
+        });
+        
+        // Enable/Disable send button based on input
+        inputs.chat.addEventListener('input', () => {
+            if (inputs.chat.value.trim()) {
+                buttons.send.removeAttribute('disabled');
+            } else {
+                buttons.send.setAttribute('disabled', 'true');
+            }
+        });
+
+        async function handleSendMessage() {
+            const text = inputs.chat.value.trim();
+            if (!text || state.isLoading) return;
+
+            // UI Updates
+            inputs.chat.value = '';
+            buttons.send.setAttribute('disabled', 'true');
+            state.isLoading = true;
+
+            // Add User Message
+            addMessage('user', text);
+            updateHistory(text);
+
+            // Show Loading Indicator
+            const loadingId = addLoadingIndicator();
+
+            try {
+                // Construct a consolidated prompt to send to the backend
+                // This combines the System Prompt, Recent History, and the new User Query
+                // This allows the simple backend (which takes only 'message') to maintain the bot's persona
+                const recentHistory = state.messages.slice(1).slice(-5).map(m => 
+                    `${m.role === 'user' ? 'User' : 'NovaMind'}: ${m.content}`
+                ).join('\n');
+
+                const consolidatedMessage = `${SYSTEM_PROMPT}\n\n[Context: Recent Chat History]\n${recentHistory}\n\n[Current Interaction]\nUser: ${text}\nNovaMind:`;
+
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: consolidatedMessage
+                    })
+                });
+
+                const data = await response.json();
+                
+                // Remove Loading Indicator
+                removeLoadingIndicator(loadingId);
+
+                if (data.error) throw new Error(data.error);
+
+                const botText = data.reply || "Signal lost. Please retry your transmission.";
+                addMessage('assistant', botText);
+
+            } catch (error) {
+                console.error(error);
+                removeLoadingIndicator(loadingId);
+                addMessage('assistant', "Communication error with NovaMind Core. Please ensure the Flask backend is running on port 8080.");
+            } finally {
+                state.isLoading = false;
+                inputs.chat.focus();
+            }
+        }
+
+        // --- Render Helpers ---
+
+        function addMessage(role, text) {
+            // Save to state
+            state.messages.push({ role, content: text });
+
+            const isUser = role === 'user';
+            const wrapperClass = isUser ? 'justify-end' : 'justify-start';
+            
+            const bubbleStyle = isUser 
+                ? 'bg-cyan-600/20 border-cyan-500/30 text-cyan-50 rounded-tr-sm' 
+                : 'bg-purple-900/40 border-purple-500/30 text-purple-50 rounded-tl-sm';
+
+            const icon = isUser ? '' : `<i data-lucide="sparkles" class="w-4 h-4 mt-1 text-purple-300 shrink-0 mr-2"></i>`;
+            const label = isUser ? 'CADET' : 'NOVAMIND';
+
+            const html = `
+                <div class="flex ${wrapperClass} animate-fade-in">
+                    <div class="max-w-[85%] md:max-w-[70%] rounded-2xl p-4 shadow-lg backdrop-blur-sm border ${bubbleStyle}">
+                        <div class="flex items-start">
+                            ${!isUser ? icon : ''}
+                            <div class="whitespace-pre-wrap leading-relaxed text-sm md:text-base">${text}</div>
+                        </div>
+                        <div class="mt-2 text-[10px] opacity-50 text-right uppercase tracking-widest">
+                            ${label}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            containers.chat.insertAdjacentHTML('beforeend', html);
+            scrollToBottom();
+            lucide.createIcons();
+        }
+
+        function addLoadingIndicator() {
+            const id = 'loading-' + Date.now();
+            const html = `
+                <div id="${id}" class="flex justify-start animate-fade-in">
+                    <div class="bg-purple-900/20 border border-purple-500/20 rounded-2xl p-4 flex items-center space-x-2">
+                        <i data-lucide="loader-2" class="w-4 h-4 animate-spin text-purple-400"></i>
+                        <span class="text-xs text-purple-300">Computing Trajectory...</span>
+                    </div>
+                </div>
+            `;
+            containers.chat.insertAdjacentHTML('beforeend', html);
+            scrollToBottom();
+            lucide.createIcons();
+            return id;
+        }
+
+        function removeLoadingIndicator(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        function scrollToBottom() {
+            containers.chat.scrollTop = containers.chat.scrollHeight;
+        }
+
+        function updateHistory(query) {
+            // If first query, clear the "no queries" message
+            const historyList = containers.history;
+            if (state.messages.filter(m => m.role === 'user').length === 1) {
+                historyList.innerHTML = '';
+            }
+
+            const html = `
+                <div class="group flex items-start space-x-3 p-3 rounded-lg hover:bg-white/5 transition-colors cursor-pointer border border-transparent hover:border-white/10 animate-fade-in">
+                    <i data-lucide="clock" class="w-3.5 h-3.5 mt-1 text-cyan-600 group-hover:text-cyan-400 transition-colors shrink-0"></i>
+                    <p class="text-sm text-gray-300 group-hover:text-white line-clamp-2 leading-relaxed">
+                        ${query}
+                    </p>
+                </div>
+            `;
+            // Prepend or Append? Append seems logical for history log.
+            historyList.insertAdjacentHTML('beforeend', html);
+            lucide.createIcons();
+        }
+
+        // --- Feature Logics ---
+
+        buttons.toggleSidebar.addEventListener('click', () => {
+            state.sidebarOpen = !state.sidebarOpen;
+            const sidebar = containers.sidebar;
+
+            if (state.sidebarOpen) {
+                sidebar.classList.remove('-translate-x-full');
+                buttons.toggleSidebar.innerHTML = '<i data-lucide="x" class="w-6 h-6"></i>';
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                buttons.toggleSidebar.innerHTML = '<i data-lucide="menu" class="w-6 h-6"></i>';
+            }
+            lucide.createIcons();
+        });
+
+        // Toggle Settings Menu
+        buttons.settings.addEventListener('click', (e) => {
+            e.stopPropagation();
+            state.settingsOpen = !state.settingsOpen;
+            
+            // Close attachment menu if open
+            if(state.attachmentOpen) {
+                state.attachmentOpen = false;
+                containers.attachmentMenu.classList.add('hidden');
+            }
+
+            if (state.settingsOpen) {
+                containers.settingsMenu.classList.remove('hidden');
+                containers.settingsMenu.classList.add('flex', 'flex-col');
+            } else {
+                containers.settingsMenu.classList.add('hidden');
+                containers.settingsMenu.classList.remove('flex', 'flex-col');
+            }
+        });
+
+        // Toggle Attachment Menu
+        buttons.attach.addEventListener('click', (e) => {
+            e.stopPropagation();
+            state.attachmentOpen = !state.attachmentOpen;
+
+            // Close settings if open
+            if(state.settingsOpen) {
+                state.settingsOpen = false;
+                containers.settingsMenu.classList.add('hidden');
+            }
+
+            if (state.attachmentOpen) {
+                containers.attachmentMenu.classList.remove('hidden');
+                containers.attachmentMenu.classList.add('flex');
+            } else {
+                containers.attachmentMenu.classList.add('hidden');
+                containers.attachmentMenu.classList.remove('flex');
+            }
+        });
+
+        // New Chat Logic
+        buttons.newChat.addEventListener('click', () => {
+            // clear chat only, keep user login
+            state.messages = [];
+            containers.chat.innerHTML = '';
+            addMessage('assistant', 'Greetings. I am NovaMind, the Vishnu College Science Core. I am calibrated to discuss Physics and Chemistry. Initiate your query.');
+        });
+
+        // Close Menus when clicking outside
+        document.addEventListener('click', (e) => {
+            // Settings
+            if (state.settingsOpen && !containers.settingsMenu.contains(e.target) && e.target !== buttons.settings) {
+                state.settingsOpen = false;
+                containers.settingsMenu.classList.add('hidden');
+            }
+            // Attachments
+            if (state.attachmentOpen && !containers.attachmentMenu.contains(e.target) && e.target !== buttons.attach) {
+                state.attachmentOpen = false;
+                containers.attachmentMenu.classList.add('hidden');
+            }
+        });
+
+        // Switch Account (Logout Logic)
+        function performLogout() {
+            // Reset State
+            state.user = { id: '', password: '' };
+            state.messages = [];
+            state.settingsOpen = false;
+            containers.settingsMenu.classList.add('hidden');
+
+            inputs.collegeId.value = '';
+            inputs.password.value = '';
+            inputs.chat.value = '';
+            containers.chat.innerHTML = '';
+            containers.history.innerHTML = '<div class="text-sm text-gray-600 italic p-4 text-center border border-white/5 rounded-lg">No queries recorded.</div>';
+            
+            // Go to Signin
+            checkSignInValidity();
+            showView('signin');
+            
+            // Add welcome back
+            addMessage('assistant', 'Greetings. I am NovaMind, the Vishnu College Science Core. I am calibrated to discuss Physics and Chemistry. Initiate your query.');
+        }
+
+        buttons.switchAccount.addEventListener('click', performLogout);
+
+        // Run
+        init();
+
+    </script>
+</body>
+</html>
